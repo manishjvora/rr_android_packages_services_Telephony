@@ -1589,7 +1589,14 @@ public class PhoneInterfaceManager extends ITelephony.Stub {
     }
 
     public boolean setRadioPower(boolean turnOn) {
-        return setRadioPowerForSubscriber(getDefaultSubscription(), turnOn);
+        final Phone defaultPhone = PhoneFactory.getDefaultPhone();
+        if (defaultPhone != null) {
+            defaultPhone.setRadioPower(turnOn);
+            return true;
+        } else {
+            loge("There's no default phone.");
+            return false;
+        }
     }
 
     public boolean setRadioPowerForSubscriber(int subId, boolean turnOn) {
@@ -1820,6 +1827,7 @@ public class PhoneInterfaceManager extends ITelephony.Stub {
 
     @Override
     public void setCellInfoListRate(int rateInMillis) {
+        enforceModifyPermission();
         mPhone.setCellInfoListRate(rateInMillis);
     }
 
